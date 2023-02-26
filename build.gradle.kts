@@ -1,17 +1,20 @@
 /*
  * The following code is created by shrralis.
  *
- *  - build.gradle.kts (Last change: 2/25/23, 11:29 PM by shrralis)
+ *  - build.gradle.kts (Last change: 2/26/23, 11:23 AM by shrralis)
  *
  * Copyright (c) 2023-2023 by shrralis.
  */
 
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     jacoco
     `maven-publish`
+    signing
     kotlin("jvm") version "1.8.10"
+    id("org.jetbrains.dokka") version "1.7.20"
     id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
 }
 
@@ -81,3 +84,64 @@ tasks {
         }
     }
 }
+
+val dokkaOutputDir = "$buildDir/dokka"
+tasks.named<DokkaTask>("dokkaHtml") { outputDirectory.set(file(dokkaOutputDir)) }
+val deleteDokkaOutputDir by tasks.register<Delete>("deleteDokkaOutputDirectory") { delete(dokkaOutputDir) }
+val javadocJar = tasks.register<Jar>("javadocJar") {
+    dependsOn(deleteDokkaOutputDir, tasks.dokkaHtml)
+    archiveClassifier.set("javadoc")
+    from(dokkaOutputDir)
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("mavenJava") {
+            artifact(javadocJar) {
+                pom {
+                    name.set(rootProject.name)
+                    description.set(project.description)
+                    url.set("https://shrralis.com")
+                    inceptionYear.set("2023")
+                    licenses {
+                        license {
+                            name.set("Apache License 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                        }
+                    }
+                    developers {
+                        developer {
+                            id.set("shrralis")
+                            name.set("Yaroslav Zhyravov")
+                            email.set("root@shrralis.com")
+                        }
+                    }
+                    scm {
+                        connection.set("https://github.com/shrralis/serial-number-generator.git")
+                        url.set("https://github.com/shrralis/serial-number-generator")
+                    }
+                    issueManagement {
+                        system.set("Github")
+                        url.set("https://github.com/shrralis/serial-number-generator")
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                val sonartypeUsername = System.getenv("SONARTYPE_USERNAME")
+                val sonartypePassword = System.getenv("SONARTYPE_PASSWORD")
+
+                name = "OSSRH"
+                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                credentials {
+                    username = sonartypeUsername
+                    password = sonartypePassword
+                }
+            }
+        }
+    }
+}
+
+signing { sign(publishing.publications) }
