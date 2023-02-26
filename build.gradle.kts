@@ -1,7 +1,7 @@
 /*
  * The following code is created by shrralis.
  *
- *  - build.gradle.kts (Last change: 2/26/23, 11:23 AM by shrralis)
+ *  - build.gradle.kts (Last change: 2/26/23, 1:44 PM by shrralis)
  *
  * Copyright (c) 2023-2023 by shrralis.
  */
@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "com.shrralis"
-version = "1.0.0"
+version = "1.0.1"
 description = "Serial Number Generator by Shrralis"
 
 repositories { mavenCentral() }
@@ -96,36 +96,37 @@ val javadocJar = tasks.register<Jar>("javadocJar") {
 
 publishing {
     publications {
-        register<MavenPublication>("mavenJava") {
-            artifact(javadocJar) {
-                pom {
-                    name.set(rootProject.name)
-                    description.set(project.description)
-                    url.set("https://shrralis.com")
-                    inceptionYear.set("2023")
-                    licenses {
-                        license {
-                            name.set("Apache License 2.0")
-                            url.set("https://www.apache.org/licenses/LICENSE-2.0")
-                        }
-                    }
-                    developers {
-                        developer {
-                            id.set("shrralis")
-                            name.set("Yaroslav Zhyravov")
-                            email.set("root@shrralis.com")
-                        }
-                    }
-                    scm {
-                        connection.set("https://github.com/shrralis/serial-number-generator.git")
-                        url.set("https://github.com/shrralis/serial-number-generator")
-                    }
-                    issueManagement {
-                        system.set("Github")
-                        url.set("https://github.com/shrralis/serial-number-generator")
+        register<MavenPublication>("maven") {
+            pom {
+                name.set(rootProject.name)
+                description.set(project.description)
+                url.set("https://shrralis.com")
+                inceptionYear.set("2023")
+                licenses {
+                    license {
+                        name.set("Apache License 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
                     }
                 }
+                developers {
+                    developer {
+                        id.set("shrralis")
+                        name.set("Yaroslav Zhyravov")
+                        email.set("root@shrralis.com")
+                    }
+                }
+                scm {
+                    connection.set("https://github.com/shrralis/serial-number-generator.git")
+                    url.set("https://github.com/shrralis/serial-number-generator")
+                }
+                issueManagement {
+                    system.set("Github")
+                    url.set("https://github.com/shrralis/serial-number-generator")
+                }
             }
+            artifact(tasks.jar)
+            artifact(tasks.kotlinSourcesJar)
+            artifact(javadocJar)
         }
 
         repositories {

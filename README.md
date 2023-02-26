@@ -5,14 +5,14 @@ Serial Number Generator is a Kotlin library that provides an API and implementat
 To use Serial Number Generator, add the following dependency to your project:
 ### Gradle
 ```groovy
-implementation 'com.shrralis:serial-number-generator:1.0.0'
+implementation 'com.shrralis:serial-number-generator:1.0.1'
 ```
 ### Maven
 ```xml
 <dependency>
   <groupId>com.shrralis</groupId>
   <artifactId>serial-number-generator</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
